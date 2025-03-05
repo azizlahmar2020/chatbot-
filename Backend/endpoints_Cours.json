@@ -1,0 +1,64 @@
+{
+  "endpoints": [
+    {
+      "name": "Get all courses",
+      "endpoint": "/course/",
+      "method": "GET",
+      "description": "Récupérer la liste de tous les cours."
+    },
+    {
+      "name": "Get a course by ID",
+      "endpoint": "/course/{id}",
+      "method": "GET",
+      "description": "Récupérer un cours spécifique en fonction de son ID.",
+      "params": {
+        "id": "Identifiant du cours (COURSE_ID)"
+      }
+    },
+    {
+      "name": "Create a new course",
+      "endpoint": "/course/",
+      "method": "POST",
+      "description": "Créer un nouveau cours.",
+      "params": {
+        "INSTRUCTOR_ID": "Identifiant du professeur (obligatoire)",
+        "TITLE": "Titre du cours (obligatoire)",
+        "PREREQUISITES": "Prérequis du cours (optionnel)",
+        "CONTENT": "Contenu du cours (optionnel)",
+        "TARGET_AUDIENCE": "Public cible (optionnel)",
+        "DESCRIPTION": "Description du cours (optionnel)",
+        "TAGS": "Mots-clés associés (optionnel)",
+        "PRICE": "Prix du cours float(optionnel, défaut = 0)",
+        "RATING": "Note du cours  float(optionnel, défaut = 0)",
+        "STATUS": "Statut du cours (Draft, Published, Archived)"
+      }
+    },
+    {
+      "name": "Update a course",
+      "endpoint": "/elearning/Course/{id}",
+      "method": "PUT",
+      "description": "Mettre à jour un cours existant.",
+      "params": {
+        "id": "Identifiant du cours (COURSE_ID, obligatoire)",
+        "INSTRUCTOR_ID": "1",
+        "TITLE": "Titre du cours (obligatoire)",
+        "PREREQUISITES": "Prérequis du cours (optionnel)",
+        "CONTENT": "Contenu du cours (optionnel)",
+        "TARGET_AUDIENCE": "Public cible (optionnel)",
+        "DESCRIPTION": "Description du cours (optionnel)",
+        "TAGS": "Mots-clés associés (optionnel)",
+        "PRICE": "Prix du cours (optionnel)",
+        "RATING": "Note du cours (optionnel)",
+        "STATUS": "Statut du cours (Draft, Published, Archived)"
+      }
+    },
+    {
+      "name": "Delete a course",
+      "endpoint": "/elearning/Course/{id}",
+      
+      "method": "DELETE",
+      "description": "Supprimer un cours existant."
+     
+    }
+  ]
+}
