@@ -1,0 +1,173 @@
+<app-validation-modal
+  *ngIf="showValidationModal"
+  [validationJson]="validationJson"
+  (onValidate)="validatePrompt($event)"
+  (onCancel)="cancelValidation()">
+</app-validation-modal>
+
+<div class="chat-layout" [class.sidebar-closed]="!isSidebarOpen">
+  <!-- Sidebar -->
+  <div class="sidebar" [class.closed]="!isSidebarOpen">
+    <!-- Partie Utilisateur -->
+    <div class="sidebar-user">
+      <div class="user-avatar">
+        <i class="fas fa-user"></i>
+      </div>
+      <div class="user-info">
+        <span class="username">User Name</span>
+      </div>
+    </div>
+
+    <!-- Liste des Discussions -->
+    <div class="sidebar-discussions">
+      <div class="sidebar-header">
+        <h3 class="sidebar-title">Recent Discussions</h3>
+      </div>
+      <ul class="discussions-list custom-scrollbar">
+        <li *ngFor="let discussion of discussions"
+
+            class="discussion-item">
+          <div class="discussion-content">
+            <span class="discussion-title">{{ discussion.title }}</span>
+            <span class="discussion-time">{{ discussion.time }}</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Chat Container -->
+  <div class="chat-container">
+    <!-- Header -->
+    <header class="chat-header">
+      <button class="sidebar-toggle" (click)="toggleSidebar()">
+        <i class="fas" [class.fa-chevron-left]="isSidebarOpen" [class.fa-chevron-right]="!isSidebarOpen"></i>
+      </button>
+      <h1 class="title_e"><i class="fas fa-robot"></i> E-learning ChatBot</h1>
+      <div class="user-info">
+        <span class="username">User</span>
+        <div class="user-avatar">
+          <i class="fas fa-user"></i>
+        </div>
+      </div>
+    </header>
+
+    <!-- Corps du chat -->
+    <section class="chat-body custom-scrollbar" #scrollContainer>
+      <div class="messages-container">
+        <div *ngFor="let message of conversationHistory; trackBy: trackById"
+             class="message-row"
+             [ngClass]="{'user': message.role==='user', 'assistant': message.role==='assistant'}">
+          <div class="avatar">
+            <i *ngIf="message.role==='user'" class="fas fa-user"></i>
+            <i *ngIf="message.role==='assistant'" class="fas fa-robot"></i>
+          </div>
+          <div class="bubble">
+            <div class="sender">
+              {{ message.role==='user' ? 'You' : 'Assistant' }}
+            </div>
+            <div class="text">
+              <!-- Si réponse structurée -->
+              <ng-container *ngIf="message.role==='assistant' && message.content.items; else simpleText">
+                <!-- Cas multiple -->
+                <div *ngIf="message.content.items.length > 1" class="items-container">
+                  <div *ngFor="let item of message.content.items" class="card">
+                    <div class="card-header">
+                      <h3>
+                        {{ currentView==='cours' ? ('Course ID: ' + item.course_id) : item.NOM_COMPLET }}
+                      </h3>
+                    </div>
+                    <div class="card-body">
+                      <ng-container *ngIf="currentView==='cours'">
+                        <p><strong>Title:</strong> {{ item.title }}</p>
+                        <p><strong>Description:</strong> {{ item.description }}</p>
+                        <p><strong>Price:</strong> {{ item.price }}</p>
+                        <p><strong>Content:</strong> {{ item.content }}</p>
+                        <p><strong>Tags:</strong> {{ item.tags }}</p>
+                        <p><strong>Target Audience:</strong> {{ item.target_audience }}</p>
+                        <p><strong>Rating:</strong> {{ item.rating }}</p>
+                      </ng-container>
+                      <ng-container *ngIf="currentView==='etudiant'">
+                        <p><strong>Email:</strong> {{ item.ADRESSE_MAIL }}</p>
+                      </ng-container>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Cas unique -->
+                <div *ngIf="message.content.items.length === 1" class="card">
+                  <div class="card-header">
+                    <h3>
+                      {{ currentView==='cours' ? ('Course ID: ' + message.content.items[0].course_id) : message.content.items[0].NOM_COMPLET }}
+                    </h3>
+                  </div>
+                  <div class="card-body">
+                    <ng-container *ngIf="currentView==='cours'">
+                      <p><strong>Title:</strong> {{ message.content.items[0].title }}</p>
+
+                      <p><strong>Description:</strong> {{ message.content.items[0].description }}</p>
+                      <p><strong>Price:</strong> {{ message.content.items[0].price }}</p>
+                      <p><strong>Content:</strong> {{ message.content.items[0].content }}</p>
+                      <p><strong>Tags:</strong> {{ message.content.items[0].tags }}</p>
+                      <p><strong>Target Audience:</strong> {{ message.content.items[0].target_audience }}</p>
+                      <p><strong>Rating:</strong> {{ message.content.items[0].rating }}</p>
+                    </ng-container>
+                    <ng-container *ngIf="currentView==='etudiant'">
+                      <p><strong>Email:</strong> {{ message.content.items[0].ADRESSE_MAIL }}</p>
+                    </ng-container>
+                  </div>
+                </div>
+              </ng-container>
+
+              <!-- Message texte simple -->
+              <ng-template #simpleText>
+                {{ message.content }}
+              </ng-template>
+            </div>
+            <div class="time">
+              {{ message.timestamp | date:'shortTime' }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Notification d'alerte -->
+    <div *ngIf="alertMessage" class="alert-notification" [ngClass]="alertType">
+      <div class="alert-icon">
+        <span *ngIf="alertType === 'success'">✓</span>
+        <span *ngIf="alertType === 'error'">⚠</span>
+        <span *ngIf="alertType === 'info'">ⓘ</span>
+      </div>
+      <span class="alert-text">{{ alertMessage }}</span>
+      <button (click)="alertMessage = ''" class="alert-close">×</button>
+    </div>
+
+    <!-- Loader -->
+    <div *ngIf="loading" class="loader-container">
+      <div class="spinner"></div>
+      <div class="loader-text">Processing your request...</div>
+    </div>
+
+    <!-- Footer / Zone de saisie -->
+    <footer class="chat-footer">
+      <div class="input-wrapper">
+        <input [(ngModel)]="command"
+               class="input-field"
+               placeholder="Type your command..."
+               (keyup.enter)="submit()"
+               [disabled]="loading">
+        <button (click)="submit()"
+                class="btn-submit"
+                [disabled]="!command.trim() || loading">
+          <svg class="send-icon" viewBox="0 0 24 24">
+            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+          </svg>
+        </button>
+      </div>
+      <div class="input-footer">
+        <small>Try commands like: "Show courses" or "Show students"</small>
+      </div>
+    </footer>
+  </div>
+</div>

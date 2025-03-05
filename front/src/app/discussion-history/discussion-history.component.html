@@ -1,0 +1,21 @@
+<div class="sidebar">
+  <!-- Partie Utilisateur -->
+  <div class="sidebar-user">
+    <div class="user-avatar">
+      <i class="fas fa-user"></i>
+    </div>
+    <div class="user-info">
+      <span class="username">User Name</span>
+    </div>
+  </div>
+
+  <!-- Liste des Discussions -->
+  <div class="sidebar-discussions">
+    <ul>
+      <li *ngFor="let discussion of discussions" (click)="selectDiscussion(discussion)">
+        <span class="discussion-title">{{ discussion.title }}</span>
+        <span class="discussion-time">{{ discussion.time }}</span>
+      </li>
+    </ul>
+  </div>
+</div>

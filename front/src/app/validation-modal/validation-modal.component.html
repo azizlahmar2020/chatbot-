@@ -1,0 +1,49 @@
+<div class="modal-overlay">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>Validation {{ httpMethod }} Request</h2>
+      <button class="close-button" (click)="cancel()">×</button>
+    </div>
+
+    <div class="modal-body">
+      <div *ngIf="isDelete" class="delete-warning">
+        ⚠️ You are about to delete a resource. Please confirm the ID:
+      </div>
+
+      <div *ngIf="editableData && objectKeys(editableData).length" class="editable-fields">
+        <div *ngFor="let key of objectKeys(editableData)" class="field-group">
+          <label>{{ key }} ({{ getFieldType(editableData[key]) }}):</label>
+
+          <input *ngIf="getFieldType(editableData[key]) === 'string'"
+                 type="text"
+                 [(ngModel)]="editableData[key]"
+                 [maxlength]="getFieldMaxLength(key)"
+                 [pattern]="getFieldPattern(key) || '.*'"
+                 required>
+
+          <input *ngIf="getFieldType(editableData[key]) === 'number'"
+                 type="number"
+                 [(ngModel)]="editableData[key]"
+                 [min]="getFieldMin(key)"
+                 [max]="getFieldMax(key)"
+                 required>
+
+          <textarea *ngIf="getFieldType(editableData[key]) === 'object'"
+                    [(ngModel)]="editableData[key]"
+                    rows="4"
+                    class="json-editor"
+                    [pattern]="getJsonPattern()"
+                    required>
+          </textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-cancel" (click)="cancel()">Cancel</button>
+      <button class="btn-validate" (click)="validate()" [disabled]="!isValid()">
+        {{ isDelete ? 'Confirm Delete' : 'Validate' }}
+      </button>
+    </div>
+  </div>
+</div>

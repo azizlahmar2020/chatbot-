@@ -1,0 +1,14 @@
+/* Container Principal avec deux sections alignées */
+.chat-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem; /* Espacement entre les deux sections */
+}
+.page-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;  /* Prendre toute la hauteur de la page */
+  gap: 20px;
+  padding: 1rem;
+}
